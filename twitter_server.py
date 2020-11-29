@@ -34,7 +34,7 @@ def sendMessage(message,client_socket):
     except:
         print("Sending Error")
 
-def mainPage(client_socket):
+def loginPage(client_socket):
     sendMessage("Welcome To Mini-Twitter \n Choose the following: \n 1. New User \n 2. Existing User\n",client_socket)
     user_response = client_socket.recv(10).decode()
     print(user_response)
@@ -98,7 +98,7 @@ def newUser(client_socket):
             
 def homePage(client_sockt):
     print("Im at home page")        
-                
+    sendMessage("")            
         
     
 def existingUser(client_socket):
@@ -134,7 +134,7 @@ def existingUser(client_socket):
 def persistentThread(client_socket,address):
    
     print(f"User with {address} connected")
-    mainPage(client_socket)
+    loginPage(client_socket)
     
         
     
