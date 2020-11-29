@@ -36,7 +36,13 @@ def sendMessage(message,client_socket):
 
 def mainPage(client_socket):
     sendMessage("Welcome To Mini-Twitter \n Choose the following: \n 1. New User \n 2. Existing User\n",client_socket)
+    user_response = client_socket.recv(10).decode()
+    print(user_response)
     
+    if user_response=='1':
+        newUser(client_socket)
+    elif user_response=='2':
+        existingUser(client_socket)
 
 def newUser(client_socket):
     
@@ -81,34 +87,55 @@ def newUser(client_socket):
                   user_to_id.close()
                   user_to_id = open('user_id.json','w')
                   user_database =open(RESULT_PATH, 'w')
-                  
                   user_database.write(json.dumps(data,indent=4))
                   user_to_id.write(json.dumps(user_to_id_dict,indent=4))
-                  
+                  user_to_id.close()
+                  user_database.close()
                   break
                  
         print("Im here")
             
             
-        
+def homePage(client_sockt):
+    print("Im at home page")        
                 
         
     
 def existingUser(client_socket):
+    
+    
     print("Welcome Old User")
+    user_database =open(RESULT_PATH, 'r')
+    user_to_id = open('user_id.json','r')
+    data =json.load(user_database)
+    user_to_id_dict = json.load(user_to_id)
+    sendMessage("Please Enter your username:",client_socket)
+    user_name = client_socket.recv(30).decode()
+    sendMessage("Please Enter your password: ",client_socket)
+    password = client_socket.recv(30).decode()
+    while True:
+        
+        
+        try:
+            if data[str(user_to_id_dict[user_name])]['password']==password :
+                homePage(client_socket)
+                break
+            else:
+                sendMessage("Incorrect Password. Please re-enter correct the password",client_socket)
+                password = client_socket.recv(30).decode()
+                
+            
+        except:
+            sendMessage("Username does not exist. Please Enter the correct username: ",client_socket)
+            user_name = client_socket.recv(30).decode()
+                
     
     
 def persistentThread(client_socket,address):
    
     print(f"User with {address} connected")
     mainPage(client_socket)
-    user_response = client_socket.recv(10).decode()
-    print(user_response)
     
-    if user_response=='1':
-        newUser(client_socket)
-    elif user_response=='0':
-        existingUser(client_socket)
         
     
     
