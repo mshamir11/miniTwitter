@@ -1,15 +1,9 @@
 import socket
 import time
 import os
-import argparse
 import threading
 import json
 
-#Argument Parser Section
-ap =argparse.ArgumentParser()
-ap.add_argument("-i","--index",help ="index to the dictionary")
-ap.add_argument("-p","--persistent",help ="1 for persistent 0 for non persistent")
-args = vars(ap.parse_args())
 
 
 #variables
@@ -94,12 +88,48 @@ def newUser(client_socket):
                   break
                  
         print("Im here")
-            
-            
-def homePage(client_sockt):
+
+def feeds(client_sockt,user_id):
+    print("feeds")
+def postTweet(client_sockt,user_id):   
+    print ("postTweets")      
+def searchPeople(client_sockt,user_id):    
+    print ("Search People")  
+def chat(client_sockt,user_id):      
+    print("Chat")
+      
+def logOut(client_sockt):
+    print("Log out page")
+    sendMessage("You have been successfull Logged out.\n 1. Login Page \n 2. Quit",client_sockt)
+    response = client_sockt.recv(30).decode()
+    
+    if response=='1':
+        loginPage(client_sockt)
+    
+    elif response=='2':
+        client_sockt.close()
+             
+def homePage(client_sockt,user_id):
     print("Im at home page")        
-    sendMessage("")            
-        
+    sendMessage("Home Page \n1. Feeds\n2. Post a tweet\n3. Search People\n4. Chat")
+    response = client_sockt.recv(30).decode()
+    
+    if response=='1':
+        feeds(client_sockt,user_id)
+    
+    elif response=='2':
+        postTweet(client_sockt,user_id)
+    
+    elif response=='3':
+        searchPeople(client_sockt,user_id)
+    
+    elif response=='4':
+        chat(client_sockt,user_id)
+    
+    elif response=='8':
+        logOut(client_sockt)            
+    else:
+        homePage(client_sockt,user_id)
     
 def existingUser(client_socket):
     
