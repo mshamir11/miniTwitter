@@ -1,0 +1,15 @@
+{
+    "0": {
+        "id_start": 10002
+    },
+    "10001": {
+        "user_name": "mshamir",
+        "password": "123456",
+        "following": []
+    },
+    "10002": {
+        "user_name": "mshamir11",
+        "password": "abcdef",
+        "following": []
+    }
+}
