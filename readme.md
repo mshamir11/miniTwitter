@@ -1,4 +1,4 @@
-## To run the coe
+## To run the code
 
 
 ```
