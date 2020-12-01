@@ -22,6 +22,7 @@ server_socket.listen(5)
 USER_DATABASE ='user_database.json'
 TWEET_TABLE='tweet_table.json'      
 USER_TO_ID =   'user_id.json'   
+
 '''
 The name in the brackets is the respective function name
 Client Side View: 
@@ -67,7 +68,34 @@ Client Side View:
        2. Post Another Tweet
        3. Quit  
  
-
+    
+    Search People
+      1. List of registered People
+      2. Search People by name
+    
+    List of Regsitered People
+      1. usera 
+      2. user b 
+      3. user c...etc
+    
+    user a
+    Welcome to user a's home page
+      1. Feeds
+      2. Follow this user.
+      3. List of followers
+      
+      
+    Follow this user
+      If the user already follows this person.then
+      
+      You have already following this person.
+        1. Previous Menu
+        2. Home Page
+    
+    else
+       Successfully followed this user. 
+        1. Previous Menu
+        2. Home Page
 
 '''
 def sendMessage(message,client_socket):
@@ -101,7 +129,7 @@ def newUser(client_socket):
         user_name = client_socket.recv(30).decode()
         sendMessage("Please Enter a password: ",client_socket)
         password = client_socket.recv(30).decode()
-        dictionary = {0:{'id_start':START_ID+1},START_ID+1:{'user_name':user_name,"password":password,"following":[]}}
+        dictionary = {0:{'id_start':START_ID+1},START_ID+1:{'user_name':user_name,"password":password,"following":[],"followers":[]}}
         user_database.write(json.dumps(dictionary,indent=4))
         user_id_dict ={user_name:START_ID+1}
         user_to_id.write(json.dumps(user_id_dict,indent=4))
@@ -123,7 +151,7 @@ def newUser(client_socket):
             except:
                   sendMessage("Please Enter a password: ",client_socket)
                   password = client_socket.recv(30).decode()
-                  data[data['0']['id_start']+1]={'user_name':user_name,"password":password,"following":[]}
+                  data[data['0']['id_start']+1]={'user_name':user_name,"password":password,"following":[],"followers":[]}
                   user_to_id_dict[user_name]=data['0']['id_start']+1
                   data['0']['id_start']=data['0']['id_start']+1
                   user_database.close()
@@ -168,21 +196,43 @@ def searchByName(client_socket,user_id):
     print("search by name")
 
 
-def followUser(client_socket,user_id):
+def followUser(client_socket,target_user_id,target_user_name,client_user_id):
     print("Follow this user")
+    user_database =open(USER_DATABASE, 'r+')
+    data =json.load(user_database)
+    if target_user_id in  data[client_user_id]['following']:
+        sendMessage(f"You have already following this user.\n 1. Previous Menu \n 2. Home Page \n",client_socket)
+    else:
+        data[client_user_id]['following'].append(target_user_id)
+        data[target_user_id]['followers'].append(client_user_id)
+        user_database.close()
+        user_database =open(USER_DATABASE, 'w')
+        user_database.write(json.dumps(data,indent=4))
+        user_database.close()
+        sendMessage(f"Successfully followed {target_user_name}.\n 1. Previous Menu \n 2. Home Page \n",client_socket)
+    response = client_socket.recv(10).decode()
+    
+    if response=='1':
+        individualUser(client_socket,target_user_id,target_user_name,client_user_id)
+    elif response =='2':
+       homePage(client_socket,client_user_id)
+    
+  
 
 def listOfFollowers(client_socket,user_id):
     print("List of followers")
     
     
-def individualUser(client_socket,user_id,user_name):
-    sendMessage(f"Welcome to {user_name}'s page. \n 1. Feeds \n 2. Follow this user. \n 3. List of followers",client_socket)
-    response = client_socket.recv(10)
-    
+def individualUser(client_socket,target_user_id,target_user_name,client_user_id):
+    print("Individual User")
+    sendMessage(f"Welcome to {target_user_name}'s page. \n 1. Feeds \n 2. Follow this user. \n 3. List of followers",client_socket)
+    response = client_socket.recv(10).decode()
+    print(response)
     if response=='1':
-        feeds(client_socket,user_id)
+        feeds(client_socket,target_user_id)
     elif response =='2':
-       followUser(client_socket,user_id)
+        print("im here.Response 2")
+        followUser(client_socket,target_user_id,target_user_name,client_user_id)
     
     elif response=='3':
         listOfFollowers(client_socket) 
@@ -201,7 +251,7 @@ def listOfUsers(client_socket,user_id):
     response = client_socket.recv(10).decode()
     for i,key in enumerate(user_to_id_dict.keys()):
         if response==str(i+1):
-            individualUser(client_socket,user_to_id[key],key)
+            individualUser(client_socket,user_to_id_dict[key],key,user_id)
             break
 
 def searchPeople(client_sockt,user_id):    
@@ -265,7 +315,7 @@ def existingUser(client_socket):
     
     while True:
         
-     try: 
+    #  try: 
         if data[str(user_to_id_dict[user_name])]['password']==password :
             homePage(client_socket,str(user_to_id_dict[user_name]))
             break
@@ -275,9 +325,9 @@ def existingUser(client_socket):
                 
             
   
-     except:
-            sendMessage("Username does not exist. Please Enter the correct username: ",client_socket)
-            user_name = client_socket.recv(30).decode()
+    #  except:
+    #         sendMessage("Username does not exist. Please Enter the correct username: ",client_socket)
+    #         user_name = client_socket.recv(30).decode()
     
     
 def persistentThread(client_socket,address):

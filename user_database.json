@@ -5,7 +5,10 @@
     "10001": {
         "user_name": "mshamir",
         "password": "123456",
-        "following": []
+        "following": [
+            10002,
+            10003
+        ]
     },
     "10002": {
         "user_name": "mshamir11",
