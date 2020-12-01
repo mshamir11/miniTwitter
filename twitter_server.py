@@ -22,7 +22,54 @@ server_socket.listen(5)
 USER_DATABASE ='user_database.json'
 TWEET_TABLE='tweet_table.json'      
 USER_TO_ID =   'user_id.json'   
+'''
+The name in the brackets is the respective function name
+Client Side View: 
 
+    login Page (loginPage):
+        1. New User
+        2. Existing User
+
+
+    New User (newUser)
+        Welcome new user
+            Please enter a username:
+            Please enter a password:
+
+    Existing User (existingUser)
+        Welcome Old User
+            Please Enter Your Username:
+            Please Enter Your Password:
+ 
+ if successfull auhtentication. Directs to Home Page
+ 
+
+    Home Page (homePage)
+    
+    Home Page:
+    
+        1. Feeds
+        2. Post a tweet
+        3. Search People
+        4. Chat
+        
+    Feeds
+     (Yet to complete)
+     
+    
+    Post a Tweet (postTweet)
+     
+     Please type your post to be tweeted.
+     (After successfully receiving the tweet from client)
+     
+     Tweet Posted.
+       1. Home Page
+       2. Post Another Tweet
+       3. Quit  
+ 
+
+
+'''
 def sendMessage(message,client_socket):
     try:
         client_socket.send(bytes(message,'utf-8'))
