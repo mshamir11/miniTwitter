@@ -3,8 +3,8 @@ import time
 import os
 import threading
 import json
-
-
+import pandas as pd
+import datetime
 
 #variables
 
@@ -12,13 +12,15 @@ HOST = "127.0.0.1"
 PORT = 12345
 BUFFER = 1024
 START_ID = 10000
+
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.bind((HOST,PORT))
 server_socket.listen(5)
 
-RESULT_PATH ='user_database.json'
-            
+#File Path
+USER_DATABASE ='user_database.json'
+TWEET_TABLE='tweet_table.json'      
         
 
 def sendMessage(message,client_socket):
@@ -41,7 +43,7 @@ def loginPage(client_socket):
 def newUser(client_socket):
     
     
-    user_database =open(RESULT_PATH, 'r+')
+    user_database =open(USER_DATABASE, 'r+')
     user_to_id = open('user_id.json','r+')
     
     user_database_dict = user_database.read()
@@ -58,7 +60,7 @@ def newUser(client_socket):
         user_to_id.write(json.dumps(user_id_dict,indent=4))
     
     else:
-        user_database =open(RESULT_PATH, 'r+')
+        user_database =open(USER_DATABASE, 'r+')
         data =json.load(user_database)
         user_to_id_dict = json.load(user_to_id)
         sendMessage("Welcome New User \nPlease enter a user name: \n",client_socket)
@@ -80,7 +82,7 @@ def newUser(client_socket):
                   user_database.close()
                   user_to_id.close()
                   user_to_id = open('user_id.json','w')
-                  user_database =open(RESULT_PATH, 'w')
+                  user_database =open(USER_DATABASE, 'w')
                   user_database.write(json.dumps(data,indent=4))
                   user_to_id.write(json.dumps(user_to_id_dict,indent=4))
                   user_to_id.close()
@@ -91,10 +93,33 @@ def newUser(client_socket):
 
 def feeds(client_sockt,user_id):
     print("feeds")
-def postTweet(client_sockt,user_id):   
-    print ("postTweets")      
+    
+def postTweet(client_sockt,user_id):
+    sendMessage("Please type your tweet to be posted",client_sockt)
+    tweet = client_sockt.recv(10000).decode()
+    tweet_table_df = pd.read_csv('tweet_table.csv')
+    tweet_id = tweet_table_df.iloc[-1]['tweet_id']+1
+    user_id = user_id
+    date_time = datetime.datetime.now()
+    tweet_dic = {'tweet_id': [tweet_id], 'content': [tweet], 'useer_id': [user_id],'date_time_created':[date_time],'last_update_time':[date_time]} 
+    df_temp =pd.DataFrame(tweet_dic) 
+    tweet_table_df= tweet_table_df.append(df_temp,ignore_index=True)
+    tweet_table_df.to_csv('tweet_table.csv', header=True, index=False)
+    
+    sendMessage("Tweet posted. \n 1. Home page. \n 2. Post Another tweet \n 3. Quit ",client_sockt)
+    response = client_sockt.recv(30).decode()
+    
+    if response=='1':
+        homePage(client_sockt,user_id)
+    elif response =='2':
+       postTweet(client_sockt,user_id)
+    
+    elif response=='3':
+        logOut(client_sockt) 
+        
 def searchPeople(client_sockt,user_id):    
     print ("Search People")  
+    
 def chat(client_sockt,user_id):      
     print("Chat")
       
@@ -111,7 +136,7 @@ def logOut(client_sockt):
              
 def homePage(client_sockt,user_id):
     print("Im at home page")        
-    sendMessage("Home Page \n1. Feeds\n2. Post a tweet\n3. Search People\n4. Chat")
+    sendMessage("Home Page \n1. Feeds\n2. Post a tweet\n3. Search People\n4. Chat",client_sockt)
     response = client_sockt.recv(30).decode()
     
     if response=='1':
@@ -135,7 +160,7 @@ def existingUser(client_socket):
     
     
     print("Welcome Old User")
-    user_database =open(RESULT_PATH, 'r')
+    user_database =open(USER_DATABASE, 'r')
     user_to_id = open('user_id.json','r')
     data =json.load(user_database)
     user_to_id_dict = json.load(user_to_id)
@@ -143,22 +168,22 @@ def existingUser(client_socket):
     user_name = client_socket.recv(30).decode()
     sendMessage("Please Enter your password: ",client_socket)
     password = client_socket.recv(30).decode()
+    
     while True:
         
-        
-        try:
-            if data[str(user_to_id_dict[user_name])]['password']==password :
-                homePage(client_socket)
-                break
-            else:
-                sendMessage("Incorrect Password. Please re-enter correct the password",client_socket)
-                password = client_socket.recv(30).decode()
+     try: 
+        if data[str(user_to_id_dict[user_name])]['password']==password :
+            homePage(client_socket,str(user_to_id_dict[user_name]))
+            break
+        else:
+            sendMessage("Incorrect Password. Please re-enter correct the password",client_socket)
+            password = client_socket.recv(30).decode()
                 
             
-        except:
+  
+     except:
             sendMessage("Username does not exist. Please Enter the correct username: ",client_socket)
             user_name = client_socket.recv(30).decode()
-                
     
     
 def persistentThread(client_socket,address):
