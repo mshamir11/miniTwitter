@@ -21,7 +21,7 @@ server_socket.listen(5)
 #File Path
 USER_DATABASE ='user_database.json'
 TWEET_TABLE='tweet_table.json'      
-        
+USER_TO_ID =   'user_id.json'   
 
 def sendMessage(message,client_socket):
     try:
@@ -44,7 +44,7 @@ def newUser(client_socket):
     
     
     user_database =open(USER_DATABASE, 'r+')
-    user_to_id = open('user_id.json','r+')
+    user_to_id = open(USER_TO_ID,'r+')
     
     user_database_dict = user_database.read()
     if len(user_database_dict)==0:
@@ -81,7 +81,7 @@ def newUser(client_socket):
                   data['0']['id_start']=data['0']['id_start']+1
                   user_database.close()
                   user_to_id.close()
-                  user_to_id = open('user_id.json','w')
+                  user_to_id = open(USER_TO_ID,'w')
                   user_database =open(USER_DATABASE, 'w')
                   user_database.write(json.dumps(data,indent=4))
                   user_to_id.write(json.dumps(user_to_id_dict,indent=4))
@@ -117,8 +117,55 @@ def postTweet(client_sockt,user_id):
     elif response=='3':
         logOut(client_sockt) 
         
+def searchByName(client_socket,user_id):
+    print("search by name")
+
+
+def followUser(client_socket,user_id):
+    print("Follow this user")
+
+def listOfFollowers(client_socket,user_id):
+    print("List of followers")
+    
+    
+def individualUser(client_socket,user_id,user_name):
+    sendMessage(f"Welcome to {user_name}'s page. \n 1. Feeds \n 2. Follow this user. \n 3. List of followers",client_socket)
+    response = client_socket.recv(10)
+    
+    if response=='1':
+        feeds(client_socket,user_id)
+    elif response =='2':
+       followUser(client_socket,user_id)
+    
+    elif response=='3':
+        listOfFollowers(client_socket) 
+    
+    
+
+def listOfUsers(client_socket,user_id):
+    print("List of users")
+    user_to_id = open(USER_TO_ID,'r+')
+    user_to_id_dict = json.load(user_to_id)
+    message =""
+    for i,key in enumerate(user_to_id_dict.keys()):
+        if len(key)>0:
+         message += f"{i+1}. {key} \n"
+    sendMessage(message,client_socket)
+    response = client_socket.recv(10).decode()
+    for i,key in enumerate(user_to_id_dict.keys()):
+        if response==str(i+1):
+            individualUser(client_socket,user_to_id[key],key)
+            break
+
 def searchPeople(client_sockt,user_id):    
-    print ("Search People")  
+    print ("Search People")
+    sendMessage("1. List of registered users. \n 2. Search for user by name",client_sockt)
+    response = client_sockt.recv(30).decode()
+    
+    if response=='1':
+        listOfUsers(client_sockt,user_id)
+    elif response =='2':
+       searchByName(client_sockt,user_id)
     
 def chat(client_sockt,user_id):      
     print("Chat")
@@ -161,7 +208,7 @@ def existingUser(client_socket):
     
     print("Welcome Old User")
     user_database =open(USER_DATABASE, 'r')
-    user_to_id = open('user_id.json','r')
+    user_to_id = open(USER_TO_ID,'r')
     data =json.load(user_database)
     user_to_id_dict = json.load(user_to_id)
     sendMessage("Please Enter your username:",client_socket)
