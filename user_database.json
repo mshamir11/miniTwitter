@@ -1,6 +1,6 @@
 {
     "0": {
-        "id_start": 10004
+        "id_start": 10005
     },
     "10001": {
         "user_name": "mshamir",
@@ -24,5 +24,11 @@
         "user_name": "",
         "password": "",
         "following": []
+    },
+    "10005": {
+        "user_name": "test",
+        "password": "1234567",
+        "following": [],
+        "followers": []
     }
 }

@@ -5,8 +5,18 @@ import threading
 import json
 import pandas as pd
 import datetime
-
+import sys
 #variables
+
+'''
+Things to do
+
+  1. Feeds
+  2. HashTags
+
+'''
+
+
 
 HOST = "127.0.0.1"
 PORT = 12345
@@ -22,6 +32,7 @@ server_socket.listen(5)
 USER_DATABASE ='user_database.json'
 TWEET_TABLE='tweet_table.json'      
 USER_TO_ID =   'user_id.json'   
+TWEET_TABLE = 'tweet_table.csv'
 
 '''
 The name in the brackets is the respective function name
@@ -162,24 +173,47 @@ def newUser(client_socket):
                   user_to_id.write(json.dumps(user_to_id_dict,indent=4))
                   user_to_id.close()
                   user_database.close()
+                  loginPage(client_socket)
                   break
                  
         print("Im here")
 
 def feeds(client_sockt,user_id):
     print("feeds")
+    TWEET_TABLE = 'tweet_table.csv'
+    tweet_table_df = pd.read_csv(TWEET_TABLE)
+    user_database =open(USER_DATABASE, 'r+')
+    data =json.load(user_database)
+    df = pd.DataFrame()
+    for follower in data[user_id]['following']:
+        print(follower)
+        df = df.append(tweet_table_df[tweet_table_df['user_id']==int(follower)],ignore_index=True)
+
+    df = df.sort_values(by='date_time_created',ascending=False )
+    message=""
+    for i in range(len(df)):
+        user_id_temp = df.iloc[i]['user_id']
+        message += f"{i+1}. {df.iloc[i]['content']} \n By : {data[user_id_temp]['user_name']} \n Posted On: {df.iloc[i]['last_update_time']} \n"
+
+    message += "\n Press 1 to go back to the home page"
+    sendMessage(message,client_sockt)
+    response = client_sockt.recv(10).decode()
+    
+    if response=='1':
+        homePage(client_sockt,user_id)
+        
     
 def postTweet(client_sockt,user_id):
     sendMessage("Please type your tweet to be posted",client_sockt)
     tweet = client_sockt.recv(10000).decode()
-    tweet_table_df = pd.read_csv('tweet_table.csv')
+    tweet_table_df = pd.read_csv(TWEET_TABLE)
     tweet_id = tweet_table_df.iloc[-1]['tweet_id']+1
     user_id = user_id
-    date_time = datetime.datetime.now()
-    tweet_dic = {'tweet_id': [tweet_id], 'content': [tweet], 'useer_id': [user_id],'date_time_created':[date_time],'last_update_time':[date_time]} 
+    date_time = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M")
+    tweet_dic = {'tweet_id': [tweet_id], 'content': [tweet], 'user_id': [user_id],'date_time_created':[date_time],'last_update_time':[date_time]} 
     df_temp =pd.DataFrame(tweet_dic) 
     tweet_table_df= tweet_table_df.append(df_temp,ignore_index=True)
-    tweet_table_df.to_csv('tweet_table.csv', header=True, index=False)
+    tweet_table_df.to_csv(TWEET_TABLE, header=True, index=False)
     
     sendMessage("Tweet posted. \n 1. Home page. \n 2. Post Another tweet \n 3. Quit ",client_sockt)
     response = client_sockt.recv(30).decode()
@@ -219,9 +253,31 @@ def followUser(client_socket,target_user_id,target_user_name,client_user_id):
     
   
 
-def listOfFollowers(client_socket,user_id):
+def listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id):
     print("List of followers")
+    user_database =open(USER_DATABASE, 'r+')
+    data =json.load(user_database)
+    user_database.close()
+    message=""
+    user_to_id = open(USER_TO_ID,'r+')
+    user_to_id_dict = json.load(user_to_id)
+    user_to_id.close()
     
+    for i,item in enumerate(data[target_user_id]['followers']):
+        message += f"{i+1}. {data[item]['user_name']} \n"
+    
+    message += "\n 0. Previous Menu "
+    sendMessage(message,client_socket)  
+    response = client_socket.recv(10).decode()
+    
+    if response=='0':
+        individualUser(client_socket,target_user_id,target_user_name,client_user_id)
+        sys.exit(1)
+    
+    for i,key in enumerate(user_to_id_dict.keys()):
+        if response==str(i+1):
+            individualUser(client_socket,user_to_id_dict[key],key,client_user_id)
+            break
     
 def individualUser(client_socket,target_user_id,target_user_name,client_user_id):
     print("Individual User")
@@ -235,11 +291,11 @@ def individualUser(client_socket,target_user_id,target_user_name,client_user_id)
         followUser(client_socket,target_user_id,target_user_name,client_user_id)
     
     elif response=='3':
-        listOfFollowers(client_socket) 
+        listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id) 
     
     
 
-def listOfUsers(client_socket,user_id):
+def listOfUsers(client_socket,client_user_id):
     print("List of users")
     user_to_id = open(USER_TO_ID,'r+')
     user_to_id_dict = json.load(user_to_id)
@@ -251,7 +307,7 @@ def listOfUsers(client_socket,user_id):
     response = client_socket.recv(10).decode()
     for i,key in enumerate(user_to_id_dict.keys()):
         if response==str(i+1):
-            individualUser(client_socket,user_to_id_dict[key],key,user_id)
+            individualUser(client_socket,user_to_id_dict[key],key,client_user_id)
             break
 
 def searchPeople(client_sockt,user_id):    
