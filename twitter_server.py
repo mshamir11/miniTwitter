@@ -335,6 +335,27 @@ def unfollowUser(client_socket,target_user_id,target_user_name,client_user_id):
         individualUser(client_socket,target_user_id,target_user_name,client_user_id)
     elif response =='2':
        homePage(client_socket,client_user_id)
+
+def deletefollower(client_socket,target_user_id,target_user_name,client_user_id):
+    print("remove this follower")
+    user_database =open(USER_DATABASE, 'r+')
+    data =json.load(user_database)
+    if target_user_id not in  data[target_user_id]['following']:
+        sendMessage(f"This user is not following you.\n 1. Previous Menu \n 2. Home Page \n",client_socket)
+    else:
+        data[target_user_id]['following'].pop(client_user_id)
+        data[client_user_id]['followers'].pop(target_user_id)
+        user_database.close()
+        user_database =open(USER_DATABASE, 'w')
+        json.dump(data,user_database)
+        user_database.close()
+        sendMessage(f"{target_user_name} has been removed from your followers list.\n 1. Previous Menu \n 2. Home Page \n",client_socket)
+    response = client_socket.recv(10).decode()
+    
+    if response=='1':
+        individualUser(client_socket,target_user_id,target_user_name,client_user_id)
+    elif response =='2':
+       homePage(client_socket,client_user_id)
        
 def viewHashtagPost(client_socket,hashtag,user_id):
     tweet_hashtag =open(HASHTAG, 'r+')
@@ -405,7 +426,7 @@ def listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id
     
 def individualUser(client_socket,target_user_id,target_user_name,client_user_id):
     print("Individual User")
-    sendMessage(f"\n\nWelcome to {target_user_name}'s page. \n 1. Feeds \n 2. Follow this user. \n 3. Unfollow this user. \n 4. List of followers \n0. Home Page ",client_socket)
+    sendMessage(f"\n\nWelcome to {target_user_name}'s page. \n 1. Feeds \n 2. Follow this user. \n 3. Unfollow this user. \n 4. Delete this follower \n 5. List of followers \n0. Home Page ",client_socket)
     response = client_socket.recv(10).decode()
     print(response)
     if response=='1':
@@ -416,7 +437,10 @@ def individualUser(client_socket,target_user_id,target_user_name,client_user_id)
     elif response =='3':
         print("im here.Response 3")
         unfollowUser(client_socket,target_user_id,target_user_name,client_user_id)
-    elif response=='4':
+    elif response =='4':
+        print("im here.Response 4")
+        deletefollower(client_socket,target_user_id,target_user_name,client_user_id)
+    elif response=='5':
         listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id)
     
     else:
