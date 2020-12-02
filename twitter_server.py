@@ -17,7 +17,6 @@ from hmac import compare_digest as compare_hash
 Things to do
 
 
-  3. Password encryption
   3. List of followers
 
 '''
@@ -152,7 +151,7 @@ def newUser(client_socket):
         user_to_id = open(USER_TO_ID,'r+')
         sendMessage("Welcome New User \n please enter a user name: \n",client_socket)
         user_name = client_socket.recv(30).decode()
-        sendMessage("Please Enter a password: ",client_socket)
+        sendMessage("Please Enter a password:",client_socket)
         password = client_socket.recv(30).decode()
         crypted_password = crypt.crypt(password,crypt.METHOD_SHA512)
         dictionary = {0:{'id_start':START_ID+1},START_ID+1:{'user_name':user_name,"password":crypted_password,"following":[str(START_ID+1)],"followers":[]}}
@@ -182,7 +181,7 @@ def newUser(client_socket):
                 user_name = client_socket.recv(30).decode()
                 
             except:
-                  sendMessage("Please Enter a password: ",client_socket)
+                  sendMessage("Please Enter a password:",client_socket)
                   password = client_socket.recv(30).decode()
                   crypted_password = crypt.crypt(password,crypt.METHOD_SHA512)
                   
@@ -516,7 +515,7 @@ def existingUser(client_socket):
     user_to_id_dict = json.load(user_to_id)
     sendMessage("Please Enter your username:",client_socket)
     user_name = client_socket.recv(30).decode()
-    sendMessage("Please Enter your password: ",client_socket)
+    sendMessage("Please Enter a password:",client_socket)
     password = client_socket.recv(30).decode()
     
     while True:
@@ -531,7 +530,7 @@ def existingUser(client_socket):
 
             break
         else:
-            sendMessage("Incorrect Password. Please re-enter correct the password",client_socket)
+            sendMessage("Incorrect Password. Please re-enter correct the password:",client_socket)
             password = client_socket.recv(30).decode()
             crypted_password= crypt.crypt(password,crypt.METHOD_SHA512)
                 
