@@ -42,6 +42,9 @@ HASHTAG = './database/hashtag.json'
 HASHTAG_COUNT = './database/hashtag.csv'
 ACTIVE_USERS ='./database/active_users.csv'
 
+#Active connections
+act_conn = {}
+
 '''
 The name in the brackets is the respective function name
 Client Side View: 
@@ -451,6 +454,64 @@ def activeUsersList(client_socket,user_id):
     elif response=='2':
         homePage(client_socket,user_id)
 
+def chatsession(client_socket,user_id,target_id):
+	# sends a message to the client whose user object is conn  
+    sendMessage("Welcome to this chatroom!",client_socket)
+  
+    while True:  
+            try:  
+                message = client_socket.recv(2048)
+                sendMessage("123",act_conn[target_id])  
+                if message:  
+  
+                    """prints the message and address of the  
+                    user who just sent the message on the server  
+                    terminal"""
+                    print (user_id + ":" + message)
+  
+                    # Calls broadcast function to send message to all  
+                    message_to_send = "Chat By " + target_id + " :" + message  
+                    sendMessage(message_to_send,ct_conn[target_id])
+  
+                else:  
+                    """message may have no content if the connection  
+                    is broken, in this case we remove the connection"""
+                    client_socket.send()
+                    del act_conn[target_id]
+ 
+            except:  
+                continue
+
+
+def chatfoll(client_socket,user_id): 
+         
+    print("Chat")
+    sendMessage("List of followers to chat\n",client_socket)
+    print("List of followers to chat")
+    user_database =open(USER_DATABASE, 'r+')
+    data =json.load(user_database)
+    user_database.close()
+    message=""
+    user_to_id = open(USER_TO_ID,'r+')
+    user_to_id_dict = json.load(user_to_id)
+    user_to_id.close()
+    
+    for i,item in enumerate(data[user_id]['followers']):
+        message += f"{i+1}. {data[item]['user_name']} \n"
+    
+    message += "\n 0. Previous Menu "
+    sendMessage(message,client_socket)  
+    response = client_socket.recv(10).decode()
+    
+    if response=='0':
+        homePage(client_socket,user_id)
+        sys.exit(1)
+    else:
+        for i,key in enumerate(user_to_id_dict.keys()):
+            if response==str(i+1):
+                chatsession(client_socket,user_id,user_to_id_dict[key])
+                break
+
 def chat(client_socket,user_id): 
          
     print("Chat")
@@ -461,6 +522,7 @@ def chat(client_socket,user_id):
         activeUsersList(client_socket,user_id)
     elif response=='2':
         print("Chat with any follower")
+        chatfoll(client_socket,user_id)
     else:
         homePage(client_socket,user_id)
       
@@ -525,6 +587,8 @@ def existingUser(client_socket):
             active_df = pd.read_csv(ACTIVE_USERS)
             active_df.loc[active_df['user_id']==user_to_id_dict[user_name],['active']]=1
             active_df.to_csv(ACTIVE_USERS,header=True,index=False)
+            act_conn[user_to_id_dict[user_name]] = client_socket
+            print(act_conn)
             homePage(client_socket,str(user_to_id_dict[user_name]))
 
             break
