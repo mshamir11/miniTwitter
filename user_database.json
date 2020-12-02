@@ -1,34 +1,37 @@
 {
     "0": {
-        "id_start": 10005
+        "id_start": 10004
     },
     "10001": {
-        "user_name": "mshamir",
-        "password": "123456",
+        "user_name": "test1",
+        "password": "$6$IKhQ6wuXop7a2sOQ$eu0KzaA/juzTEXjCS8wzzLG/eLT.aBHaHbQGjWlvg3ZEql09IjFQrhFP7szXLK9t73UOysBYBgEp5SPDWKbY3/",
         "following": [
-            10002,
-            10003
-        ]
+            "10001"
+        ],
+        "followers": []
     },
     "10002": {
-        "user_name": "mshamir11",
-        "password": "abcdef",
-        "following": []
+        "user_name": "test2",
+        "password": "$6$SGOlt2pbG8TcygJQ$0y0MoVRn9UG5osjbiSDwqmBGP5lACUuzpgKGJhLmkwZLHZphe3jQnItRXgpITBJKnvrvRWT9X/YBTcEGPTfTX1",
+        "following": [
+            "10002"
+        ],
+        "followers": []
     },
     "10003": {
-        "user_name": "alphamegazord",
-        "password": "123456788",
-        "following": []
+        "user_name": "test3",
+        "password": "$6$FfBcpxEYEyGaUJ6C$C3Fdrj0dDr2uKKQmYlCSqSCdfE.eyJZ/YI4Hv6cK5GOac7JRCTiqcT4mxRBqXLS8fnHFMY8beNA4cvYLGNLL2/",
+        "following": [
+            "10003"
+        ],
+        "followers": []
     },
     "10004": {
-        "user_name": "",
-        "password": "",
-        "following": []
-    },
-    "10005": {
-        "user_name": "test",
-        "password": "1234567",
-        "following": [],
+        "user_name": "test4",
+        "password": "$6$s6HxhoHUsBxfKcRv$S2DGsv67TSTh/WGu/rHCztZNC0TYvAGUWUYVaMbbHwENoEGXex9qf32oPg62PY5MtUxwe3z0Aw4tF7pJMs3Z5.",
+        "following": [
+            "10004"
+        ],
         "followers": []
     }
 }
