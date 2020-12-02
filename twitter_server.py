@@ -16,7 +16,7 @@ from hmac import compare_digest as compare_hash
 '''
 Things to do
 
-
+  2. Retweet
   3. List of followers
 
 '''
@@ -34,13 +34,13 @@ server_socket.bind((HOST,PORT))
 server_socket.listen(5)
 
 #File Path
-USER_DATABASE ='user_database.json'
-TWEET_TABLE='tweet_table.json'      
-USER_TO_ID =   'user_id.json'   
-TWEET_TABLE = 'tweet_table.csv'
-HASHTAG = 'hashtag.json'
-HASHTAG_COUNT = 'hashtag.csv'
-ACTIVE_USERS ='active_users.csv'
+USER_DATABASE ='./database/user_database.json'
+TWEET_TABLE='./database/tweet_table.json'      
+USER_TO_ID =   './database/user_id.json'   
+TWEET_TABLE = './database/tweet_table.csv'
+HASHTAG = './database/hashtag.json'
+HASHTAG_COUNT = './database/hashtag.csv'
+ACTIVE_USERS ='./database/active_users.csv'
 
 '''
 The name in the brackets is the respective function name
@@ -335,7 +335,6 @@ def viewHashtagPost(client_socket,hashtag,user_id):
     if response=='0':
         homePage(client_socket,user_id) 
         
-
 def hashtags(client_socket,user_id):
     hash_tag_df = pd.read_csv(HASHTAG_COUNT)
     hash_tag_df = hash_tag_df.sort_values(by='count',ascending=False)
@@ -547,8 +546,6 @@ def persistentThread(client_socket,address):
     loginPage(client_socket)
     
         
-    
-    
 def persistentConnection():
     
     client_socket, address = server_socket.accept()
