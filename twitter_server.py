@@ -6,13 +6,16 @@ import json
 import pandas as pd
 import datetime
 import sys
+import re
+
 #variables
+
 
 '''
 Things to do
 
-  1. Feeds
   2. HashTags
+  3. List of followers
 
 '''
 
@@ -33,7 +36,8 @@ USER_DATABASE ='user_database.json'
 TWEET_TABLE='tweet_table.json'      
 USER_TO_ID =   'user_id.json'   
 TWEET_TABLE = 'tweet_table.csv'
-
+HASHTAG = 'hashtag.json'
+HASHTAG_COUNT = 'hashtag.csv'
 '''
 The name in the brackets is the respective function name
 Client Side View: 
@@ -109,6 +113,9 @@ Client Side View:
         2. Home Page
 
 '''
+def extract_hash_tags(text):
+    	return set([re.sub(r"#+", "", k) for k in set([re.sub(r"(\W+)$", "", j, flags = re.UNICODE) for j in set([i for i in text.split() if i.startswith("#")])])])
+
 def sendMessage(message,client_socket):
     try:
         client_socket.send(bytes(message,'utf-8'))
@@ -180,7 +187,7 @@ def newUser(client_socket):
 
 def feeds(client_sockt,user_id):
     print("feeds")
-    TWEET_TABLE = 'tweet_table.csv'
+    
     tweet_table_df = pd.read_csv(TWEET_TABLE)
     user_database =open(USER_DATABASE, 'r+')
     data =json.load(user_database)
@@ -207,6 +214,8 @@ def postTweet(client_sockt,user_id):
     sendMessage("Please type your tweet to be posted",client_sockt)
     tweet = client_sockt.recv(10000).decode()
     tweet_table_df = pd.read_csv(TWEET_TABLE)
+    hash_tag_df = pd.read_csv(HASHTAG_COUNT)
+    
     tweet_id = tweet_table_df.iloc[-1]['tweet_id']+1
     user_id = user_id
     date_time = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M")
@@ -214,6 +223,42 @@ def postTweet(client_sockt,user_id):
     df_temp =pd.DataFrame(tweet_dic) 
     tweet_table_df= tweet_table_df.append(df_temp,ignore_index=True)
     tweet_table_df.to_csv(TWEET_TABLE, header=True, index=False)
+    
+    tweet_hashtag =open(HASHTAG, 'r+')
+    hashtag_set = extract_hash_tags(tweet)
+    
+    if len(tweet_hashtag.read())==0:  
+        
+        tweet_dic_new = {}
+        for item in hashtag_set:
+            tweet_dic_new[item]= {'tweet_count':"1",'tweet_ids':[str(tweet_id)]}
+            hash_tag_df_temp = pd.DataFrame({'hashtag':[item],'count':[1]})
+            hash_tag_df =hash_tag_df.append(hash_tag_df_temp,ignore_index=True)
+
+       
+        hash_tag_df.to_csv(HASHTAG_COUNT,header=True,index=False)
+        tweet_hashtag.write(json.dumps(tweet_dic_new,indent=4))
+        
+    
+    else:
+        tweet_hashtag =open(HASHTAG, 'r+')
+        hashtag_dic = json.load(tweet_hashtag)
+        for item in hashtag_set:
+            if (hashtag_dic[item]):
+                hashtag_dic[item]['tweet_ids'].append(str(tweet_id))
+                hashtag_dic[item]['tweet_count'] = int(hashtag_dic[item]['tweet_count'])+1
+                hash_tag_df.loc[hash_tag_df['hashtag'] == item, ['count']] +=1
+            else:
+                hashtag_dic[item]['tweet_ids']=[str(tweet_id)]
+                hashtag_dic[item]['tweet_count'] ="1"
+                hash_tag_df_temp = pd.DataFrame({'hashtag':[item],'count':[1]})
+                hash_tag_df =hash_tag_df.append(hash_tag_df_temp,ignore_index=True)
+        
+        hash_tag_df.to_csv(HASHTAG_COUNT,header=True,index=False)
+        tweet_hashtag =open(HASHTAG, 'w')   
+        tweet_hashtag.write(json.dumps(hashtag_dic,indent=4))
+    
+    tweet_hashtag.close()
     
     sendMessage("Tweet posted. \n 1. Home page. \n 2. Post Another tweet \n 3. Quit ",client_sockt)
     response = client_sockt.recv(30).decode()
@@ -250,9 +295,48 @@ def followUser(client_socket,target_user_id,target_user_name,client_user_id):
         individualUser(client_socket,target_user_id,target_user_name,client_user_id)
     elif response =='2':
        homePage(client_socket,client_user_id)
-    
-  
 
+def viewHashtagPost(client_socket,hashtag,user_id):
+    tweet_hashtag =open(HASHTAG, 'r+')
+    hashtag_dic = json.load(tweet_hashtag)
+    tweets_list = hashtag_dic[hashtag]['tweet_ids']
+    user_database =open(USER_DATABASE, 'r+')
+    data =json.load(user_database)
+    tweet_table_df = pd.read_csv(TWEET_TABLE)
+    message =""
+    for i,item in enumerate(tweets_list):
+        df_temp = tweet_table_df[tweet_table_df['tweet_id']==int(item)]
+        user_id_temp = df_temp.iloc[0]['user_id']
+        message += f"{i+1}. {df_temp.iloc[0]['content']} \n By : {data[str(user_id_temp)]['user_name']} \n Posted On: {df_temp.iloc[0]['last_update_time']} \n"
+        
+    message+= "\n To go to the home page, press 0"   
+    sendMessage(message,client_socket)
+    response = client_socket.recv(10).decode()
+    
+    if response=='0':
+        homePage(client_socket,user_id) 
+        
+
+def hashtags(client_socket,user_id):
+    hash_tag_df = pd.read_csv(HASHTAG_COUNT)
+    hash_tag_df = hash_tag_df.sort_values(by='count',ascending=False)
+    hashtag_df_temp =hash_tag_df[:5]
+    
+    message = ""
+    for i in range(len(hashtag_df_temp)):
+        message += f" {i+1} {hashtag_df_temp.iloc[i]['hashtag']} \n" 
+    
+    message += "To view the posts enter the respective index of the hashtag. To go to the home page, press 0"  
+    sendMessage(message,client_socket)
+    response = client_socket.recv(10).decode()
+    
+    for i in range(5):
+        if response ==str(i+1):
+            viewHashtagPost(client_socket,hashtag_df_temp.iloc[i]['hashtag'],user_id)
+            break
+
+    if response=='0':
+        homePage(client_socket,user_id)
 def listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id):
     print("List of followers")
     user_database =open(USER_DATABASE, 'r+')
@@ -273,11 +357,11 @@ def listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id
     if response=='0':
         individualUser(client_socket,target_user_id,target_user_name,client_user_id)
         sys.exit(1)
-    
-    for i,key in enumerate(user_to_id_dict.keys()):
-        if response==str(i+1):
-            individualUser(client_socket,user_to_id_dict[key],key,client_user_id)
-            break
+    else:
+        for i,key in enumerate(user_to_id_dict.keys()):
+            if response==str(i+1):
+                individualUser(client_socket,user_to_id_dict[key],key,client_user_id)
+                break
     
 def individualUser(client_socket,target_user_id,target_user_name,client_user_id):
     print("Individual User")
@@ -293,8 +377,6 @@ def individualUser(client_socket,target_user_id,target_user_name,client_user_id)
     elif response=='3':
         listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id) 
     
-    
-
 def listOfUsers(client_socket,client_user_id):
     print("List of users")
     user_to_id = open(USER_TO_ID,'r+')
@@ -336,7 +418,7 @@ def logOut(client_sockt):
              
 def homePage(client_sockt,user_id):
     print("Im at home page")        
-    sendMessage("Home Page \n1. Feeds\n2. Post a tweet\n3. Search People\n4. Chat",client_sockt)
+    sendMessage("Home Page \n1. Feeds\n2. Post a tweet\n3. Search People\n4. Chat \n5. Trending Hashtags\n8. Logout ",client_sockt)
     response = client_sockt.recv(30).decode()
     
     if response=='1':
@@ -350,6 +432,9 @@ def homePage(client_sockt,user_id):
     
     elif response=='4':
         chat(client_sockt,user_id)
+    
+    elif response=='5':
+        hashtags(client_sockt,user_id)
     
     elif response=='8':
         logOut(client_sockt)            
