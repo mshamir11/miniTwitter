@@ -16,7 +16,7 @@ from hmac import compare_digest as compare_hash
 '''
 Things to do
 
-  2. Retweet
+
   3. List of followers
 
 '''
@@ -34,13 +34,13 @@ server_socket.bind((HOST,PORT))
 server_socket.listen(5)
 
 #File Path
-USER_DATABASE ='./database/user_database.json'
-TWEET_TABLE='./database/tweet_table.json'      
-USER_TO_ID =   './database/user_id.json'   
-TWEET_TABLE = './database/tweet_table.csv'
-HASHTAG = './database/hashtag.json'
-HASHTAG_COUNT = './database/hashtag.csv'
-ACTIVE_USERS ='./database/active_users.csv'
+USER_DATABASE ='user_database.json'
+TWEET_TABLE='tweet_table.json'      
+USER_TO_ID =   'user_id.json'   
+TWEET_TABLE = 'tweet_table.csv'
+HASHTAG = 'hashtag.json'
+HASHTAG_COUNT = 'hashtag.csv'
+ACTIVE_USERS ='active_users.csv'
 
 '''
 The name in the brackets is the respective function name
@@ -315,6 +315,27 @@ def followUser(client_socket,target_user_id,target_user_name,client_user_id):
     elif response =='2':
        homePage(client_socket,client_user_id)
 
+def unfollowUser(client_socket,target_user_id,target_user_name,client_user_id):
+    print("Unfollow this user")
+    user_database =open(USER_DATABASE, 'r+')
+    data =json.load(user_database)
+    if target_user_id not in  data[client_user_id]['following']:
+        sendMessage(f"You are not following this user.\n 1. Previous Menu \n 2. Home Page \n",client_socket)
+    else:
+        data[client_user_id]['following'].pop(target_user_id)
+        data[target_user_id]['followers'].pop(client_user_id)
+        user_database.close()
+        user_database =open(USER_DATABASE, 'w')
+        json.dump(data,user_database)
+        user_database.close()
+        sendMessage(f"Successfully unfollowed {target_user_name}.\n 1. Previous Menu \n 2. Home Page \n",client_socket)
+    response = client_socket.recv(10).decode()
+    
+    if response=='1':
+        individualUser(client_socket,target_user_id,target_user_name,client_user_id)
+    elif response =='2':
+       homePage(client_socket,client_user_id)
+       
 def viewHashtagPost(client_socket,hashtag,user_id):
     tweet_hashtag =open(HASHTAG, 'r+')
     hashtag_dic = json.load(tweet_hashtag)
@@ -335,6 +356,7 @@ def viewHashtagPost(client_socket,hashtag,user_id):
     if response=='0':
         homePage(client_socket,user_id) 
         
+
 def hashtags(client_socket,user_id):
     hash_tag_df = pd.read_csv(HASHTAG_COUNT)
     hash_tag_df = hash_tag_df.sort_values(by='count',ascending=False)
@@ -383,7 +405,7 @@ def listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id
     
 def individualUser(client_socket,target_user_id,target_user_name,client_user_id):
     print("Individual User")
-    sendMessage(f"\n\nWelcome to {target_user_name}'s page. \n 1. Feeds \n 2. Follow this user. \n 3. List of followers \n0. Home Page ",client_socket)
+    sendMessage(f"\n\nWelcome to {target_user_name}'s page. \n 1. Feeds \n 2. Follow this user. \n 3. Unfollow this user. \n 4. List of followers \n0. Home Page ",client_socket)
     response = client_socket.recv(10).decode()
     print(response)
     if response=='1':
@@ -391,8 +413,10 @@ def individualUser(client_socket,target_user_id,target_user_name,client_user_id)
     elif response =='2':
         print("im here.Response 2")
         followUser(client_socket,target_user_id,target_user_name,client_user_id)
-    
-    elif response=='3':
+    elif response =='3':
+        print("im here.Response 3")
+        unfollowUser(client_socket,target_user_id,target_user_name,client_user_id)
+    elif response=='4':
         listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id)
     
     else:
@@ -481,7 +505,7 @@ def logOut(client_socket,user_id):
              
 def homePage(client_socket,user_id):
     print("Im at home page")        
-    sendMessage("Home Page \n1. Feeds\n2. Post a tweet\n3. Search People\n4. Chat \n5. Trending Hashtags\n8. Logout ",client_socket)
+    sendMessage("Home Page \n1. Feeds\n2. Post a tweet\n3. Search People \n4. List of followers  \n5. Chat \n6. Trending Hashtags\n8. Logout ",client_socket)
     response = client_socket.recv(30).decode()
     
     if response=='1':
@@ -494,9 +518,12 @@ def homePage(client_socket,user_id):
         searchPeople(client_socket,user_id)
     
     elif response=='4':
-        chat(client_socket,user_id)
+        listOfFollowers(client_socket,target_user_id,target_user_name,client_user_id)
     
     elif response=='5':
+        chat(client_socket,user_id)
+    
+    elif response=='6':
         hashtags(client_socket,user_id)
     
     elif response=='8':
@@ -546,6 +573,8 @@ def persistentThread(client_socket,address):
     loginPage(client_socket)
     
         
+    
+    
 def persistentConnection():
     
     client_socket, address = server_socket.accept()
