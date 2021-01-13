@@ -7,7 +7,8 @@ import json
 import subprocess
 import sys
 import argparse
-
+import getpass
+import stdiomask
 
 #variable
 IP_ADDRESS = "127.0.0.1"
@@ -24,9 +25,13 @@ def persistentConnection(IP_ADDRESS,PORT):
    
   
    while True:
-    data = client_socket.recv(1024)
-    print(data.decode())
-    input_resp = input("Enter your input: ")
+    data = client_socket.recv(1024).decode()
+    print(data)
+    if data[-9:-1]=="password":
+        input_resp = stdiomask.getpass("Enter a input:")
+    else:
+        input_resp = input("Enter your input: ")
+    
     if input_resp=='exit':
         break
     client_socket.send(bytes(input_resp,'utf-8'))
