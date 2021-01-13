@@ -9,9 +9,9 @@ Mini-Tweet is a server-client program which has similar functionalities of that 
 ## Contents <!-- omit in toc -->
 
 - [1. Instructions 👨‍🏫](#1-instructions-)
-  - [1.1 Requirements](#11-requirements)
-  - [1.2 Start Server](#12-start-server)
-  - [1.3 Start Client](#13-start-client)
+  - [1.1 Requirements 🧾](#11-requirements-)
+  - [1.2 Start Server 👨‍💻](#12-start-server-)
+  - [1.3 Start Client :man_in_tuxedo:](#13-start-client-man_in_tuxedo)
 - [2. Features](#2-features)
   - [2.1 Create a new account](#21-create-a-new-account)
   - [2.2 Login and Logout](#22-login-and-logout)
@@ -35,11 +35,27 @@ Mini-Tweet is a server-client program which has similar functionalities of that 
 ## 1. Instructions 👨‍🏫
 
 Please follow the instruction to run the program successfully.
-### 1.1 Requirements
 
-### 1.2 Start Server
-### 1.3 Start Client
-## 2. Features
+### 1.1 Requirements 🧾
+
+The following libraries needs to be installed for the smooth functioning of the program.
+
+```bash
+ stdiomask
+ crypt
+ hmac
+```
+
+### 1.2 Start Server 👨‍💻
+
+The server can be serter by entering the following on a terminal.
+
+ ```bash
+    python twitter_server.py
+ ```
+
+### 1.3 Start Client :man_in_tuxedo:
+## 2. Features 
 ### 2.1 Create a new account
 ### 2.2 Login and Logout
 #### 2.2.1 Masking Password
