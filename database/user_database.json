@@ -1,6 +1,6 @@
 {
     "0": {
-        "id_start": 10007
+        "id_start": 10008
     },
     "10001": {
         "user_name": "test1",
@@ -8,7 +8,9 @@
         "following": [
             "10001"
         ],
-        "followers": []
+        "followers": [
+            "10008"
+        ]
     },
     "10002": {
         "user_name": "test2",
@@ -16,7 +18,9 @@
         "following": [
             "10002"
         ],
-        "followers": []
+        "followers": [
+            "10008"
+        ]
     },
     "10003": {
         "user_name": "test3",
@@ -55,6 +59,16 @@
         "password": "$6$0TpKW7xddSG5n7R2$.lL42Ron8a.7PmfetdikehpQ2YY1TFDIHfT.WGE12gzXQ81YLMi1vxYmjJPppyI0cJ5Ht6NmC9Nz9kIgU5kVE0",
         "following": [
             "10007"
+        ],
+        "followers": []
+    },
+    "10008": {
+        "user_name": "test100",
+        "password": "$6$4CWyXWkGO1MepxLn$a.2UWOo8rTOohJ8uPh7HcR9mPugXeBULoPWOZMQl5R42htKlzaPzSNVlUpH/skGwNJ5yxX168CqXTHrGY0GDz1",
+        "following": [
+            "10008",
+            "10001",
+            "10002"
         ],
         "followers": []
     }

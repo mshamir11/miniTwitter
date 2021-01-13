@@ -15,19 +15,18 @@ Mini-Tweet is a server-client program which has similar functionalities of that 
 - [2. Features](#2-features)
   - [2.1 Create a new account](#21-create-a-new-account)
   - [2.2 Login and Logout](#22-login-and-logout)
-    - [2.2.1 Masking Password](#221-masking-password)
   - [2.3 Post a tweet](#23-post-a-tweet)
+  - [2.4 Search People](#24-search-people)
+  - [2.6 Follow/Unfollow User](#26-followunfollow-user)
+  - [2.7 Feeds](#27-feeds)
+- [3. How did we do it? 🤔](#3-how-did-we-do-it-)
+  - [2.1 Create a new account](#21-create-a-new-account-1)
+  - [2.2 Login and Logout](#22-login-and-logout-1)
+    - [2.2.1 Masking Password](#221-masking-password)
+  - [2.3 Post a tweet](#23-post-a-tweet-1)
   - [2.4 Viewing Feeds](#24-viewing-feeds)
   - [2.5 Retweet](#25-retweet)
   - [2.6 Look who all are online](#26-look-who-all-are-online)
-- [3. How it is done. 🤔](#3-how-it-is-done-)
-  - [2.1 Create a new account](#21-create-a-new-account-1)
-  - [2.2 Login and Logout](#22-login-and-logout-1)
-    - [2.2.1 Masking Password](#221-masking-password-1)
-  - [2.3 Post a tweet](#23-post-a-tweet-1)
-  - [2.4 Viewing Feeds](#24-viewing-feeds-1)
-  - [2.5 Retweet](#25-retweet-1)
-  - [2.6 Look who all are online](#26-look-who-all-are-online-1)
 - [4. Future Scope](#4-future-scope)
 
 ---
@@ -44,6 +43,7 @@ The following libraries needs to be installed for the smooth functioning of the 
  stdiomask
  crypt
  hmac
+ pandas
 ```
 
 ### 1.2 Start Server 👨‍💻
@@ -55,20 +55,54 @@ The server can be serter by entering the following on a terminal.
  ```
 
 ### 1.3 Start Client :man_in_tuxedo:
+
+```bash
+   python twitter_client.py
+```
+
+![start](./images/start.png)
+
 ## 2. Features 
+
 ### 2.1 Create a new account
+
+![newAccount](./images/newAccount.png)
+
 ### 2.2 Login and Logout
-#### 2.2.1 Masking Password
+
+![existingUSer](./images/existingU.png)
+
 ### 2.3 Post a tweet
-### 2.4 Viewing Feeds
-### 2.5 Retweet
-### 2.6 Look who all are online
-## 3. How it is done. 🤔
+
+![postTweet](./images/postTweet.png)
+
+### 2.4 Search People
+
+![searchPeople](./images/searchPeople.png)
+
+
+### 2.6 Follow/Unfollow User
+
+![follow](./images/follow.png)
+
+### 2.7 Feeds
+
+![feeds](./images/feeds.png)
+
+## 3. How did we do it? 🤔
+
 ### 2.1 Create a new account
+
 ### 2.2 Login and Logout
+
 #### 2.2.1 Masking Password
+
 ### 2.3 Post a tweet
+
 ### 2.4 Viewing Feeds
+
 ### 2.5 Retweet
+
 ### 2.6 Look who all are online
+
 ## 4. Future Scope
