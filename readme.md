@@ -18,7 +18,8 @@ Mini-Tweet is a server-client program which has similar functionalities of that 
   - [2.3 Post a tweet 🐦](#23-post-a-tweet-)
   - [2.4 Search People 👓](#24-search-people-)
   - [2.6 Follow/Unfollow User 🧑‍🤝‍🧑](#26-followunfollow-user-)
-  - [2.7 Feeds](#27-feeds)
+  - [2.7 Feeds 📰](#27-feeds-)
+  - [2.8 Retweet 🐦🐦](#28-retweet-)
 - [3. How did we do it? 🤔](#3-how-did-we-do-it-)
   - [2.1 Create a new account](#21-create-a-new-account)
   - [2.2 Login and Logout](#22-login-and-logout)
@@ -27,7 +28,7 @@ Mini-Tweet is a server-client program which has similar functionalities of that 
   - [2.4 Viewing Feeds](#24-viewing-feeds)
   - [2.5 Retweet](#25-retweet)
   - [2.6 Look who all are online](#26-look-who-all-are-online)
-- [4. Future Scope](#4-future-scope)
+- [4. Future Scope -->](#4-future-scope---)
 
 ---
 
@@ -106,15 +107,30 @@ Once the user sees other users either through the list of registered users or by
   <img src="./images/follow.png" />
 </p>
 
-### 2.7 Feeds
+### 2.7 Feeds 📰
+
+Feeds for a particular user displays all the tweets that the respective user had tweeted as well as the tweets by the people who he/she follows.
 
 <p align="center">
   <img src="./images/feeds.png" />
 </p>
 
----
-**To do**
-## 3. How did we do it? 🤔
+### 2.8 Retweet 🐦🐦
+
+If you want to retweet a particular tweet. Select the respective tweet by going to feeds. Then, choose the option for retweet. Add a message and post the tweet.
+
+<p align="center">
+  <img src="./images/retweet.png" />
+</p>
+
+An example of retweeted message:
+
+<p align="center">
+  <img src="./images/retweetExample.png" />
+</p>
+
+
+## 3. How did we do it? 🤔 
 
 ### 2.1 Create a new account
 
@@ -130,4 +146,4 @@ Once the user sees other users either through the list of registered users or by
 
 ### 2.6 Look who all are online
 
-## 4. Future Scope
+## 4. Future Scope -->

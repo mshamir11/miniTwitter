@@ -1,8 +1,15 @@
 {
     "feelingdelighted": {
+        "tweet_count": 2,
+        "tweet_ids": [
+            "2",
+            "5"
+        ]
+    },
+    "delighted": {
         "tweet_count": "1",
         "tweet_ids": [
-            "2"
+            "5"
         ]
     }
 }

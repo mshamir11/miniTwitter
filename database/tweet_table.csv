@@ -3,3 +3,8 @@ tweet_id,content,user_id,date_time_created,last_update_time
 2,fist tweet #feelingdelighted,10001,"02/12/2020, 11:47","02/12/2020, 11:47"
 3,Hey this is my first tweet,10008,"13/01/2021, 21:38","13/01/2021, 21:38"
 4,Hey this is my second tweet!,10008,"13/01/2021, 22:17","13/01/2021, 22:17"
+5,"Retweet:
+This is my retweet. #delighted
+fist tweet #feelingdelighted
+By: test1
+Posted On:02/12/2020, 11:47",10008,"15/01/2021, 12:11","15/01/2021, 12:11"
