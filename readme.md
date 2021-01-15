@@ -60,7 +60,7 @@ The server can be serter by entering the following on a terminal.
    python twitter_client.py
 ```
 
-![start](./images/start.png)
+<span style="display:block;text-align:center">![start](./images/start.png)
 
 ## 2. Features 🍨
 
@@ -68,32 +68,34 @@ The server can be serter by entering the following on a terminal.
 
 Once the user chooses the option 1 for new user. It gets a reply from server asking for a username and the respective password. It would ask to reenter the username, if the username already exist in the database. Thr password is masked to protect the privacy of the user.
 
-![newAccount](./images/newAccount.png)
+<span style="display:block;text-align:center">![newAccount](./images/newAccount.png)
 
 ### 2.2 Login and Logout 😆
 
 Once the user is registered. He/She can login using the option of existing user. The prompt asks for authentication. If the password and user is valid, the program would take the user to his/her homepage. At the homepage, the user can access various features of the program, which include viewing feeds, posting a tweet, search for people and follow them, to see who all are online and see the trending hashtags,etc.
-![existingUSer](./images/existingU.png)
+<span style="display:block;text-align:center">![existingUSer](./images/existingU.png)
 
 ### 2.3 Post a tweet 🐦
 
 User can post their tweet into the program by entering the tweet message after selecting the option 2. Users can include hashtags in their tweet, which would be used to see tweets based on hashtags and to list the top trending hashtags.
 
-![postTweet](./images/postTweet.png)
+<span style="display:block;text-align:center">![postTweet](./images/postTweet.png)
 
 ### 2.4 Search People 👓
 
 The registered users has the ability to see people who have registed and can follow their users to get the tweets from them. There are two options for searching, either the user could see the list of all the users who have registered or can search for a particular name in the search by name option.
 
-![searchPeople](./images/searchPeople.png)
+<span style="display:block;text-align:center">![searchPeople](./images/searchPeople.png)
 
 ### 2.6 Follow/Unfollow User 🧑‍🤝‍🧑
 
-![follow](./images/follow.png)
+Once the user sees other users either through the list of registered users or by searching by their name, the user can access the required user's home page by selecting the respective user's option. The user would be taken to the selected user's homepage. And there you would get an option of following and unfollowing a particular user.
+
+<span style="display:block;text-align:center">![follow](./images/follow.png)
 
 ### 2.7 Feeds
 
-![feeds](./images/feeds.png)
+<span style="display:block;text-align:center">![feeds](./images/feeds.png)
 
 ---
 **To do**
