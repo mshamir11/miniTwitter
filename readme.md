@@ -73,6 +73,7 @@ Once the user chooses the option 1 for new user. It gets a reply from server ask
 ### 2.2 Login and Logout 😆
 
 Once the user is registered. He/She can login using the option of existing user. The prompt asks for authentication. If the password and user is valid, the program would take the user to his/her homepage. At the homepage, the user can access various features of the program, which include viewing feeds, posting a tweet, search for people and follow them, to see who all are online and see the trending hashtags,etc.
+
 <span style="display:block;text-align:center">![existingUSer](./images/existingU.png)
 
 ### 2.3 Post a tweet 🐦
@@ -95,7 +96,9 @@ Once the user sees other users either through the list of registered users or by
 
 ### 2.7 Feeds
 
-<span style="display:block;text-align:center">![feeds](./images/feeds.png)
+<p align="center">
+  <img src="./images/feeds.png" />
+</p>
 
 ---
 **To do**
