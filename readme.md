@@ -89,6 +89,8 @@ The server can be serter by entering the following on a terminal.
 
 ![feeds](./images/feeds.png)
 
+---
+**To do**
 ## 3. How did we do it? 🤔
 
 ### 2.1 Create a new account
