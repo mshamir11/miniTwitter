@@ -75,7 +75,7 @@ Once the user chooses the option 1 for new user. It gets a reply from server ask
   <img src="./images/newAccount.png" />
 </p>
 
-### 2.2 Login and Logout 😆
+### 2.2 Login and Logout �
 
 Once the user is registered. He/She can login using the option of existing user. The prompt asks for authentication. If the password and user is valid, the program would take the user to his/her homepage. At the homepage, the user can access various features of the program, which include viewing feeds, posting a tweet, search for people and follow them, to see who all are online and see the trending hashtags,etc.
 
@@ -130,20 +130,3 @@ An example of retweeted message:
 </p>
 
 
-## 3. How did we do it? 🤔 
-
-### 2.1 Create a new account
-
-### 2.2 Login and Logout
-
-#### 2.2.1 Masking Password
-
-### 2.3 Post a tweet
-
-### 2.4 Viewing Feeds
-
-### 2.5 Retweet
-
-### 2.6 Look who all are online
-
-## 4. Future Scope -->
