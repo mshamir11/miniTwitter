@@ -11,7 +11,7 @@ Mini-Tweet is a server-client program which has similar functionalities of that 
 - [1. Instructions 👨‍🏫](#1-instructions-)
   - [1.1 Requirements 🧾](#11-requirements-)
   - [1.2 Start Server 👨‍💻](#12-start-server-)
-  - [1.3 Start Client :man_in_tuxedo:](#13-start-client-man_in_tuxedo)
+  - [1.3 Start Client](#13-start-client-man_in_tuxedo)
 - [2. Features 🍨](#2-features-)
   - [2.1 Create a new account 🏦](#21-create-a-new-account-)
   - [2.2 Login and Logout 😆](#22-login-and-logout-)
@@ -20,15 +20,7 @@ Mini-Tweet is a server-client program which has similar functionalities of that 
   - [2.6 Follow/Unfollow User 🧑‍🤝‍🧑](#26-followunfollow-user-)
   - [2.7 Feeds 📰](#27-feeds-)
   - [2.8 Retweet 🐦🐦](#28-retweet-)
-- [3. How did we do it? 🤔](#3-how-did-we-do-it-)
-  - [2.1 Create a new account](#21-create-a-new-account)
-  - [2.2 Login and Logout](#22-login-and-logout)
-    - [2.2.1 Masking Password](#221-masking-password)
-  - [2.3 Post a tweet](#23-post-a-tweet)
-  - [2.4 Viewing Feeds](#24-viewing-feeds)
-  - [2.5 Retweet](#25-retweet)
-  - [2.6 Look who all are online](#26-look-who-all-are-online)
-- [4. Future Scope -->](#4-future-scope---)
+
 
 ---
 
