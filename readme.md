@@ -55,7 +55,7 @@ The server can be serter by entering the following on a terminal.
     python twitter_server.py
  ```
 
-### 1.3 Start Client :man_in_tuxedo:
+### 1.3 Start Client
 
 ```bash
    python twitter_client.py
